@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h1>Koriu - test</h1>
+  <button onclick="testAPI()">Tester l'API</button>
+  <p id="result"></p>
+
+  <script>
+    async function testAPI() {
+      const res = await fetch('/api/test');
+      const data = await res.json();
+      document.getElementById('result').innerText = JSON.stringify(data);
+    }
+  </script>
+</body>
+</html>
