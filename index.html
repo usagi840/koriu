@@ -4,8 +4,15 @@
   <h1>Koriu - test</h1>
   <button onclick="testAPI()">Tester l'API</button>
   <p id="result"></p>
+<button onclick="checkout()">Acheter le t-shirt</button>
 
-  <script>
+<script>
+  async function checkout() {
+    const res = await fetch('/api/create-checkout', { method: 'POST' });
+    const data = await res.json();
+    window.location.href = data.url; // redirige vers la page de paiement Stripe
+  }
+  
     async function testAPI() {
       const res = await fetch('/api/test');
       const data = await res.json();
