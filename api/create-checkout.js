@@ -4,21 +4,28 @@ export default async function handler(req, res) {
   }
 
   try {
+    const { cart } = req.body; // ex: [{ name: "T-shirt Koriu", price: 2500, quantity: 2 }]
+
+    const body = new URLSearchParams({
+      'mode': 'payment',
+      'success_url': `${req.headers.origin}/success.html`,
+      'cancel_url': `${req.headers.origin}/cancel.html`
+    });
+
+    cart.forEach((item, i) => {
+      body.append(`line_items[${i}][price_data][currency]`, 'eur');
+      body.append(`line_items[${i}][price_data][product_data][name]`, item.name);
+      body.append(`line_items[${i}][price_data][unit_amount]`, item.price);
+      body.append(`line_items[${i}][quantity]`, item.quantity);
+    });
+
     const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}`,
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: new URLSearchParams({
-        'mode': 'payment',
-        'line_items[0][price_data][currency]': 'eur',
-        'line_items[0][price_data][product_data][name]': 'T-shirt Koriu',
-        'line_items[0][price_data][unit_amount]': '2500', // 25,00€ en centimes
-        'line_items[0][quantity]': '1',
-        'success_url': `${req.headers.origin}/success.html`,
-        'cancel_url': `${req.headers.origin}/cancel.html`
-      })
+      body
     });
 
     const session = await response.json();
