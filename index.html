@@ -2,22 +2,18 @@
 <html>
 <body>
   <h1>Koriu - test</h1>
-  <button onclick="testAPI()">Tester l'API</button>
-  <p id="result"></p>
 <button onclick="checkout()">Acheter le t-shirt</button>
 
 <script>
-  async function checkout() {
-    const res = await fetch('/api/create-checkout', { method: 'POST' });
+  async function checkout(cart) {
+    const res = await fetch('/api/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cart })
+    });
     const data = await res.json();
-    window.location.href = data.url; // redirige vers la page de paiement Stripe
+    window.location.href = data.url;
   }
-  
-    async function testAPI() {
-      const res = await fetch('/api/test');
-      const data = await res.json();
-      document.getElementById('result').innerText = JSON.stringify(data);
-    }
-  </script>
+</script>
 </body>
 </html>
